@@ -1,0 +1,504 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palisades Symphony - May 18, 2025</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #1a202c; /* Dark gray for body */
+            color: #e2e8f0; /* Light gray text */
+        }
+        .accordion-button { 
+            background-color: #4a5568; /* Darker gray for buttons */
+            padding: 10px; 
+            cursor: pointer; 
+            border: none; 
+            width: 100%; 
+            text-align: left; 
+            font-size: 1.1rem; 
+            color: #e2e8f0; /* Light text */
+        }
+        .accordion-content { 
+            display: none; 
+            padding: 10px; 
+            background-color: #2d3748; /* Dark gray for content */
+            color: #e2e8f0; /* Light text */
+        }
+        .accordion-content.active { display: block; }
+        h1, h2, h3 { 
+            font-weight: bold; 
+            color: #ffffff; /* White for headings */
+        }
+        a { 
+            color: #63b3ed; /* Light blue for links */
+        }
+        a:hover { 
+            color: #90cdf4; /* Lighter blue on hover */
+        }
+        @media (max-width: 640px) {
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+            p, li { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div class="container mx-auto p-4">
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold">Palisades Symphony</h1>
+            <p class="text-lg">Dr. Maxim Kuzin, Music Director</p>
+            <p class="text-lg">Susan S. Rosenstein, Choral Director, Brentwood Palisades Chorale</p>
+            <p class="text-xl mt-2">May 18, 2025 • 7:30 P.M.</p>
+        </header>
+
+        <!-- Concert Details -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <h2 class="text-2xl font-bold text-center">Messa da Requiem by Giuseppe Verdi</h2>
+            <p class="text-center mt-2">Performed at:</p>
+            <p class="text-center">The Church of Jesus Christ of Latter-day Saints<br>3400 Sawtelle Blvd., Los Angeles, CA 90066</p>
+            <h3 class="text-xl font-semibold mt-4">Program</h3>
+            <ul class="list-disc pl-6">
+                <li>Requiem e Kyrie</li>
+                <li>Dies irae</li>
+                <li>Offertorio</li>
+                <li>Sanctus</li>
+                <li>Agnus Dei</li>
+                <li>Lux aeterna</li>
+                <li>Libera me</li>
+            </ul>
+            <h3 class="text-xl font-semibold mt-4">Soloists</h3>
+            <ul class="list-disc pl-6">
+                <li>Farrell, Diana, soprano</li>
+                <li>Wesley, Alexis, mezzo-soprano</li>
+                <li>Oh, Wi Young, tenor</li>
+                <li>Lowe, Ben, baritone</li>
+            </ul>
+            <p class="mt-4"><strong>Conductor:</strong> Dr. Maxim Kuzin</p>
+        </section>
+
+        <!-- About Giuseppe Verdi -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">About Giuseppe Verdi</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Giuseppe Verdi (1813 - 1901)</h3>
+                <p>Giuseppe Verdi was more than a composer; he was a force of nature in 19th-century Italy. Born in the small village of Le Roncole, Verdi rose from modest beginnings to become a central figure in Italian opera, with masterpieces like Rigoletto, La Traviata, and Aida cementing his legacy. His music resonated deeply with the Italian people, intertwining with the nation's cultural and political fabric during the Risorgimento, the movement for Italian unification. The chorus "Va, pensiero" from his opera Nabucco became an unofficial anthem for the cause, symbolizing the longing for freedom and unity.</p>
+                <p>Verdi's personal life was marked by profound tragedies, including the loss of his first wife and their two young children. These experiences of grief and resilience profoundly influenced his compositions, infusing them with emotional depth and authenticity. His Messa da Requiem stands as a testament to his ability to channel personal sorrow into universal expressions of mourning and hope.</p>
+                <p>Beyond the stage, Verdi was a man of the people. He served briefly in the Italian parliament and was known for his philanthropic efforts, including the establishment of a retirement home for musicians in Milan. His commitment to both his art and his country made him a beloved national figure.</p>
+                <p>As we experience Verdi's Requiem, we are reminded of the man behind the music - Verdi was a composer whose life and work continue to inspire and move audiences around the world.</p>
+            </div>
+        </section>
+
+        <!-- Program Notes -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Program Notes: Verdi's Messa da Requiem</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Verdi’s Messa da Requiem: Operatic Grandeur in Sacred Form</h3>
+                <p>Giuseppe Verdi’s Messa da Requiem is a towering fusion of sacred ritual and operatic fire - music of immense power, spiritual depth, and dramatic tension. Premiered on May 22, 1874, in the Church of San Marco in Milan under Verdi’s own baton, the work was composed in memory of Alessandro Manzoni, the revered Italian author of I Promessi Sposi. Verdi’s admiration for Manzoni was profound, and the Requiem stands not only as a tribute to a national hero but also as a personal outpouring of grief transformed into musical majesty.</p>
+                <p>The Requiem has its roots in an earlier endeavor. In 1868, following the death of Gioachino Rossini, Verdi proposed a collaborative Requiem involving several Italian composers. He contributed the final movement, Libera me, but the project fell apart before it could be performed. When Manzoni died five years later, Verdi revisited and expanded that music, ultimately weaving it into the heart of a full-length Requiem Mass to be performed on the first anniversary of Manzoni’s death. The result is a work that straddles worlds - profoundly liturgical in text, unmistakably theatrical in style.</p>
+                <p>Though cast in the traditional structure of the Roman Catholic funeral mass, Verdi’s Requiem bursts with operatic color and dramatic pacing. The orchestra is rich and expansive, featuring double winds, four bassoons, a piccolo, off-stage and on-stage trumpets, four horns, three trombones, and a cimbasso, along with timpani and a thundering bass drum. The orchestration is not mere embellishment - it plays an integral role in the storytelling. In the infamous Dies irae, massive fortissimo timpani and bass drum strokes evoke the terror of the Last Judgment, while off-stage trumpets in the Tuba mirum surround the audience in a sonic halo of apocalyptic alarm.</p>
+                <p>Verdi’s dynamic range in the score is extreme. Markings stretch from hushed pppp to explosive ffff, each dynamic shift infused with dramatic intent. These aren’t ornamental contrasts - they serve the emotional and rhetorical flow of the work. The opening Requiem aeternam emerges from near silence, setting a tone of stillness and reverence. But that serenity shatters moments later with the first shattering Dies irae, a motif that recurs throughout the Mass like a fearful memory returning unbidden.</p>
+                <p>Equally striking is Verdi’s writing for voices. The four soloists - soprano, mezzo-soprano, tenor, and bass - move fluidly between operatic expressiveness and chamber-like intimacy. In the Agnus Dei, the soprano and mezzo begin with a stark, unaccompanied duet in octaves, which the chorus and flutes gently mirror, lending the moment a sense of raw vulnerability. Later, in the Lux aeterna, three soloists sing a delicate a cappella trio that suggests timelessness through transparency. The Sanctus, by contrast, is an exuberant double fugue performed by a divided chorus, bursting with contrapuntal energy that rivals any operatic finale.</p>
+                <p>Despite its sacred text, the Requiem has largely found its home on the concert stage rather than in liturgical services. Its sheer scale, theatrical pacing, and expressive intensity demand a setting where the music can resonate fully - both physically and emotionally. Hans von Bülow famously dismissed it as “an opera in clerical dress”, a jab that nonetheless highlights the boldness of Verdi’s approach. Yet it is precisely this fusion of forms - sacred gravity and operatic immediacy - that gives the work its enduring force.</p>
+                <p>Recent performances underscore its undiminished impact. A 2024 BBC Proms performance under Ryan Bancroft was praised for its “blazing force and compelling drama”, while Riccardo Muti’s 2025 appearance at London’s Royal Festival Hall was hailed as a “major musical event”, with demand for tickets surpassing supply. These reactions are not new. From its first performance, the Requiem has captivated audiences - stirring awe, reflection, and, often, tears.</p>
+                <p>Verdi’s Messa da Requiem stands today as a masterwork not just of 19th-century choral music, but of the entire Western canon. Its success lies in its refusal to compromise: it honors its sacred text while allowing the full power of musical drama to illuminate its themes. At its heart, it is a deeply human work - one that grapples with grief, fear, hope, and transcendence. In setting Manzoni’s memory to music, Verdi created something larger than a monument: he gave us a mirror through which we see our own mortality, and a voice—our own voice—crying and pleading into God’s eternity.</p>
+            </div>
+        </section>
+
+        <!-- Latin Text and English Translation -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Latin Text and English Translation</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Latin Text and English Translation</h3>
+                <p>Prepared by Dr. Maxim Kuzin for the May 18, 2025, Palisades Symphony performance.</p>
+
+                <h4 class="text-lg font-semibold mt-4">I. Requiem et Kyrie – Solo Quartet and Chorus</h4>
+                <p><strong>Latin:</strong> Requiem aeternam dona eis, Domine, et lux perpetua luceat eis.<br>
+                   <strong>English:</strong> Grant them eternal rest, O Lord, and let everlasting light shine upon them.</p>
+                <p><strong>Latin:</strong> Te decet hymnus, Deus, in Sion,<br>
+                   <strong>English:</strong> A hymn, O God, becometh Thee in Sion,</p>
+                <p><strong>Latin:</strong> et tibi reddetur votum in Jerusalem.<br>
+                   <strong>English:</strong> and a vow shall be paid to Thee in Jerusalem.</p>
+                <p><strong>Latin:</strong> Exaudi orationem meam,<br>
+                   <strong>English:</strong> Hear my prayer;</p>
+                <p><strong>Latin:</strong> ad te omnis caro veniet.<br>
+                   <strong>English:</strong> before Thee all flesh shall come.</p>
+                <p><strong>Latin:</strong> Requiem aeternam dona eis, Domine, et lux perpetua luceat eis.<br>
+                   <strong>English:</strong> Grant them eternal rest, O Lord, and let everlasting light shine upon them.</p>
+                <p><strong>Latin:</strong> Kyrie eleison.<br>
+                   <strong>English:</strong> Lord, have mercy upon us.</p>
+                <p><strong>Latin:</strong> Christe eleison.<br>
+                   <strong>English:</strong> Christ, have mercy upon us.</p>
+                <p><strong>Latin:</strong> Kyrie eleison.<br>
+                   <strong>English:</strong> Lord, have mercy upon us.</p>
+
+                <h4 class="text-lg font-semibold mt-4">II. Dies irae – Chorus</h4>
+                <p><strong>Latin:</strong> Dies irae, dies illa, solvet saeclum in favilla, teste David cum Sibylla.<br>
+                   <strong>English:</strong> The day of wrath, that day will dissolve the world in ashes, as David prophesied with the Sibyl.</p>
+                <p><strong>Latin:</strong> Quantus tremor est futurus, quando judex est venturus cuncta stricte discussurus.<br>
+                   <strong>English:</strong> How great a terror there will be when the Judge shall come who will thresh out everything thoroughly!</p>
+                <p><strong>Latin (Tuba mirum):</strong> Tuba mirum spargens sonum per sepulcra regionum<br>
+                   <strong>English:</strong> The trumpet, scattering a wondrous sound through the tombs of every land,</p>
+                <p><strong>Latin:</strong> coget omnes ante thronum.<br>
+                   <strong>English:</strong> will gather all before the throne.</p>
+                <p><strong>Latin (Mors stupebit):</strong> Mors stupebit et natura, cum resurget creatura, judicanti responsura.<br>
+                   <strong>English:</strong> Death and nature shall stand amazed when creation rises again to answer to the Judge.</p>
+                <p><strong>Latin (Liber scriptus):</strong> Liber scriptus proferetur in quo totum continetur, unde mundus judicetur.<br>
+                   <strong>English:</strong> A written book will be brought forth which contains everything for which the world shall be judged.</p>
+                <p><strong>Latin:</strong> Judex ergo cum sedebit, quidquid latet apparebit, nil inultum remanebit.<br>
+                   <strong>English:</strong> And so when the Judge takes his seat whatever is hidden shall be made manifest, nothing shall remain unavenged.</p>
+                <p><strong>Latin:</strong> Dies irae, dies illa, solvet saeclum in favilla, teste David cum Sibylla.<br>
+                   <strong>English:</strong> The day of wrath, that day will dissolve the world in ashes, as David prophesied with the Sibyl.</p>
+                <p><strong>Latin (Quid sum miser):</strong> Quid sum miser tunc dicturus?<br>
+                   <strong>English:</strong> What shall I, a wretch, say then?</p>
+                <p><strong>Latin:</strong> Quem patronum rogaturus, cum vix justus sit securus?<br>
+                   <strong>English:</strong> Whom shall I ask to plead for me, when scarcely the righteous are safe?</p>
+                <p><strong>Latin (Rex tremendae):</strong> Rex tremendae majestatis, qui salvandos salvas gratis, salva me, fons pietatis.<br>
+                   <strong>English:</strong> King of dreadful majesty, who freely saves the redeemed, save me, O Fount of Pity.</p>
+                <p><strong>Latin (Recordare):</strong> Recordare, Jesu pie,<br>
+                   <strong>English:</strong> Recall, merciful Jesus,</p>
+                <p><strong>Latin:</strong> quod sum causa tuae viae,<br>
+                   <strong>English:</strong> that I was the reason for Thy journey:</p>
+                <p><strong>Latin:</strong> ne me perdas illa die.<br>
+                   <strong>English:</strong> do not destroy me on that day.</p>
+                <p><strong>Latin:</strong> Quaerens me, sedisti lassus, redemisti crucem passus; tantus labor non sit cassus.<br>
+                   <strong>English:</strong> Seeking me, Thou didst sit down weary, Thou didst redeem me, having endured the Cross: let not such great pains have been in vain.</p>
+                <p><strong>Latin:</strong> Juste judex ultionis, donum fac remissionis ante diem rationis.<br>
+                   <strong>English:</strong> Righteous Judge of vengeance, give me the gift of redemption before the day of reckoning.</p>
+                <p><strong>Latin (Ingemisco):</strong> Ingemisco tanquam reus, culpa rubet vultus meus, supplicanti parce, Deus.<br>
+                   <strong>English:</strong> I groan as one guilty, and my face blushes with guilt; spare the suppliant, O God.</p>
+                <p><strong>Latin:</strong> Qui Mariam absolvisti, et latronem exaudisti, mihi quoque spem dedisti.<br>
+                   <strong>English:</strong> Thou who didst absolve Mary [Magdalene] and hear the prayer of the thief, hast given me hope as well.</p>
+                <p><strong>Latin:</strong> Preces meae non sunt dignae, sed tu, bonus, fac benigne,<br>
+                   <strong>English:</strong> My prayers are not worthy, but Thou, O good one, show mercy,</p>
+                <p><strong>Latin:</strong> ne perenni cremer igne.<br>
+                   <strong>English:</strong> lest I burn in everlasting fire.</p>
+                <p><strong>Latin:</strong> Inter oves locum praesta, et ab haedis me sequestra, statuens in parte dextra.<br>
+                   <strong>English:</strong> Give me a place among the sheep, and separate me from the goats, placing me on Thy right hand.</p>
+                <p><strong>Latin (Confutatis):</strong> Confutatis maledictis, flammis acribus addictis, voca me cum benedictis.<br>
+                   <strong>English:</strong> When the damned are confounded and consigned to searing flames, call me to be with the blessed.</p>
+                <p><strong>Latin:</strong> Oro supplex et acclinis, cor contritum quasi cinis, gere curam mei finis.<br>
+                   <strong>English:</strong> I pray, suppliant and kneeling, a heart as contrite as ashes, take Thou my ending into Thy care.</p>
+                <p><strong>Latin:</strong> Dies irae, dies illa, solvet saeclum in favilla, teste David cum Sibylla.<br>
+                   <strong>English:</strong> The day of wrath, that day will dissolve the world in ashes, as David prophesied with the Sibyl.</p>
+                <p><strong>Latin (Lacrimosa):</strong> Lacrimosa dies illa, qua resurget ex favilla judicandus homo reus.<br>
+                   <strong>English:</strong> That day is one of weeping on which shall rise again from the ashes the guilty man, to be judged.</p>
+                <p><strong>Latin:</strong> Huic ergo parce Deus, pie Jesu Domine, dona eis requiem. Amen.<br>
+                   <strong>English:</strong> Therefore spare this one, O God, merciful Lord Jesus. Grant them rest. Amen.</p>
+
+                <h4 class="text-lg font-semibold mt-4">III. Offertorio – Solo Quartet</h4>
+                <p><strong>Latin:</strong> Domine Jesu Christe, rex gloriae,<br>
+                   <strong>English:</strong> Lord Jesus Christ, King of Glory,</p>
+                <p><strong>Latin:</strong> libera animas omnium fidelium defunctorum de poenis inferni et de profundo lacu.<br>
+                   <strong>English:</strong> deliver the souls of all the faithful departed from the pains of hell and from the bottomless pit.</p>
+                <p><strong>Latin:</strong> Libera eas de ore leonis, ne absorbeat eas tartarus, ne cadant in obscurum;<br>
+                   <strong>English:</strong> Deliver them from the jaws of the lion, that hell may not swallow them up, and they may not fall into darkness;</p>
+                <p><strong>Latin:</strong> sed signifer sanctus Michael repraesentet eas in lucem sanctam, quam olim Abrahae promisisti, et semini ejus.<br>
+                   <strong>English:</strong> but may the holy standard-bearer Michael bring them into the holy light, as Thou didst promise of old to Abraham and his seed.</p>
+                <p><strong>Latin:</strong> Hostias et preces tibi, Domine, laudis offerimus.<br>
+                   <strong>English:</strong> We offer unto Thee, O Lord, sacrifices and prayers of praise.</p>
+                <p><strong>Latin:</strong> Tu suscipe pro animabus illis, quarum hodie memoriam facimus;<br>
+                   <strong>English:</strong> Do Thou receive them on behalf of those souls whom we commemorate this day.</p>
+                <p><strong>Latin:</strong> fac eas, Domine, de morte transire ad vitam, quam olim Abrahae promisisti, et semini ejus.<br>
+                   <strong>English:</strong> Allow them, Lord, to pass from death to life, as Thou didst promise of old to Abraham and his seed.</p>
+
+                <h4 class="text-lg font-semibold mt-4">IV. Sanctus – Chorus I and Chorus II</h4>
+                <p><strong>Latin:</strong> Sanctus, sanctus, sanctus, Dominus Deus Sabaoth!<br>
+                   <strong>English:</strong> Holy, holy, holy, Lord God of Hosts!</p>
+                <p><strong>Latin:</strong> Pleni sunt coeli et terra gloria tua. Hosanna in excelsis!<br>
+                   <strong>English:</strong> Heaven and earth are full of Thy glory. Hosanna in the highest!</p>
+                <p><strong>Latin:</strong> Benedictus qui venit in nomine Domini. Hosanna in excelsis!<br>
+                   <strong>English:</strong> Blessed is he that cometh in the name of the Lord. Hosanna in the highest!</p>
+
+                <h4 class="text-lg font-semibold mt-4">V. Agnus Dei – Soprano, Mezzo-soprano, and Chorus</h4>
+                <p><strong>Latin:</strong> Agnus Dei, qui tollis peccata mundi, dona eis requiem.<br>
+                   <strong>English:</strong> O Lamb of God, that takest away the sins of the world; grant them rest.</p>
+                <p><strong>Latin:</strong> Agnus Dei, qui tollis peccata mundi, dona eis requiem sempiternam.<br>
+                   <strong>English:</strong> O Lamb of God, that takest away the sins of the world; grant them eternal rest.</p>
+
+                <h4 class="text-lg font-semibold mt-4">VI. Lux aeterna – Mezzo-soprano, Tenor, and Bass</h4>
+                <p><strong>Latin:</strong> Lux aeterna luceat eis, Domine, cum sanctis tuis in aeternum, quia pius es.<br>
+                   <strong>English:</strong> Let everlasting light shine on them, O Lord, with Thy saints forever, for Thou art merciful.</p>
+                <p><strong>Latin:</strong> Requiem aeternam dona eis, Domine, et lux perpetua luceat eis; cum sanctis tuis in aeternum, quia pius es.<br>
+                   <strong>English:</strong> Grant them eternal rest, O Lord, and let everlasting light shine upon them; with Thy saints forever, for Thou art merciful.</p>
+
+                <h4 class="text-lg font-semibold mt-4">VII. Libera me – Soprano and Chorus</h4>
+                <p><strong>Latin:</strong> Libera me, Domine, de morte aeterna in die illa tremenda;<br>
+                   <strong>English:</strong> Deliver me, O Lord, from eternal death on that awful day</p>
+                <p><strong>Latin:</strong> quando coeli movendi sunt et terra.<br>
+                   <strong>English:</strong> when the heavens and earth shall be moved.</p>
+                <p><strong>Latin:</strong> Dum veneris judicare saeculum per ignem.<br>
+                   <strong>English:</strong> When Thou shall come to judge the world with fire.</p>
+                <p><strong>Latin:</strong> Tremens factus sum ego et timeo, dum discussio venerit atque ventura ira.<br>
+                   <strong>English:</strong> I am seized with trembling and I fear the time when the trial shall approach, and the wrath to come.</p>
+                <p><strong>Latin:</strong> Quando coeli movendi sunt et terra.<br>
+                   <strong>English:</strong> When the heavens and the earth shall be shaken.</p>
+                <p><strong>Latin:</strong> Dies irae, dies illa, calamitatis et miseriae, dies magna et amara valde.<br>
+                   <strong>English:</strong> The day of wrath, that day, of calamity and misery, a dreadful and exceedingly bitter day.</p>
+                <p><strong>Latin:</strong> Requiem aeternam dona eis, Domine, et lux perpetua luceat eis.<br>
+                   <strong>English:</strong> Grant them eternal rest, O Lord, and let everlasting light shine upon them.</p>
+                <p><strong>Latin:</strong> Libera me, Domine, de morte aeterna in die illa tremenda.<br>
+                   <strong>English:</strong> Deliver me, O Lord, from eternal death on that awful day.</p>
+            </div>
+        </section>
+
+        <!-- Soloists -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Soloists</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Farrell, Diana, soprano</h3>
+                <p>Praised for her “golden voice” and dramatic range, American lyric-spinto soprano Diana Farrell is the 2023 American Prize laureate (Women in Opera) and winner of the 2024 American Prize for Professional Opera as well as the AIMS Vocal Competition. She made her Carnegie Hall debut in January 2025, creating Jane in the world premiere of The Yellow Wallpaper, fresh on the heels of her fourth Puccini’s Tosca (2024), and acclaimed portrayals of Lady Macbeth (Macbeth) and Krystyna Zywulska in Jake Heggie’s Two Remain. Her versatility spans Magda Sorel (The Consul), Contessa (Le nozze di Figaro), Micaëla (Carmen), and Anna Maurrant (Street Scene) with companies such as Opera Western Reserve, Crested Butte Music Festival, and Pacific Opera Project. On the concert stage she has headlined Beethoven’s Ninth, Berlioz’s Les Nuits d’été, Strauss’s Vier Lieder, and Mozart’s Requiem. Also an award-winning stage director and librettist, Diana serves as Artistic Director of Lyric Opera of Orange County and holds an Artist Diploma from the Cleveland Institute of Music.</p>
+
+                <h3 class="text-xl font-semibold">Wesley, Alexis, mezzo-soprano</h3>
+                <p>Cuban-American mezzo-soprano Alexis Wesley is a dynamic and versatile performer whose work spans opera, oratorio, musical theatre, and film. She has sung leading roles with Pacific Opera Project, Mission Opera, and Independent Opera Company, appearing in critically acclaimed productions of Dialogues des Carmélites, The Medium, Madama Butterfly, and Le nozze di Figaro. Her oratorio credits include solo appearances in Verdi’s Requiem, Handel’s Messiah, Mendelssohn’s Elijah, and Pergolesi’s Stabat Mater with ensembles across Los Angeles County. A frequent collaborator with new music and interdisciplinary projects, she has also produced and starred in original works for stage and screen. Alexis is a graduate of the Stella Adler Conservatory of Acting in New York and holds a Master of Music in Voice from California State University, Northridge.</p>
+
+                <h3 class="text-xl font-semibold">Oh, Wi Young, tenor</h3>
+                <p>Tenor Wi Young Oh is an internationally active soloist and conductor, widely recognized for his commanding voice and stylistic versatility. He has performed leading roles at some of the world’s most prominent venues, including Walt Disney Concert Hall, the Seoul Arts Center, and Lotte Concert Hall. His operatic credits include Samson (Samson and Delilah), Moses (Exodus), and Yoon Dong Joo in the eponymous opera at Disney Hall. As a tenor soloist, he has appeared in Beethoven’s Symphony No. 9 with the LAKMA Orchestra, and in numerous international peace concerts under the baton of composer Lim Goong Soo. In addition to his solo work, he serves as conductor of the Hankuk University of Foreign Studies Choir, KAMA Choir, and Golden Chorale, and teaches voice at W.M.U. His academic training includes advanced degrees in theology and music from institutions in Korea and the United States.</p>
+
+                <h3 class="text-xl font-semibold">Lowe, Ben, baritone</h3>
+                <p>Baritone Ben Lowe is a fast-rising artist known for his resonant, powerful voice and compelling stage presence. His recent European debut as the bass soloist in Verdi’s Requiem in Siena and Florence garnered critical acclaim, adding to a growing list of major international engagements. In the U.S., he has performed at New York’s Merkin Hall, the Broad Stage in Santa Monica, and with companies including LA Opera, OperaDelaware, and Opera UCLA. Notable appearances include roles in Dead Man Walking, Trial by Jury, and Matt Aucoin’s Crossing. A laureate of the Marilyn Horne Song Competition and a finalist in the Palm Springs Opera Guild and Loren L. Zachary Society Competitions, Ben studied under legendary baritone Vladimir Chernov. He holds degrees from UCLA and Cal State Dominguez Hills and is represented by Pinnacle Arts Management. His artistic range extends from grand opera to modern repertoire and concert works.</p>
+            </div>
+        </section>
+
+        <!-- Conductors -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Conductors</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Dr. Maxim Kuzin, Music Director and Conductor</h3>
+                <p>Dr. Maxim Kuzin, born in Ukraine, has garnered international acclaim in the orchestral and choral spheres. He is celebrated for his commitment to nurturing new talent, educational outreach, and uncovering hidden gems of classical music. His career spans many roles, including currently the Music Director of the Thousand Oaks Philharmonic, the UC Santa Barbara Chamber Orchestra, and the newly appointed Music Director of the Palisades Symphony. His influence extends to the Irvine Classical Players Youth Orchestra and the Hankuk University of Foreign Studies Chorale in Los Angeles. Dr. Kuzin has led National Symphony Orchestra of Ukraine, National Philharmonic Orchestra of Ukraine, National Symphony Orchestra of Georgia (Tbilisi), National Radio Symphony Orchestra of Ukraine, National President Orchestra of Ukraine, and Vladivostok Philharmonic Orchestra (Russia), among others. He received his doctoral degree in Orchestral Conducting at UCLA, where his mentor was Professor Neal Stulberg. Before moving to the United States in 2014, he was part of the vibrant music scene in Ukraine, contributing to the Tchaikovsky National Music Academy and the Reinhold Glière Institute of Music.</p>
+
+                <h3 class="text-xl font-semibold">Susan S. Rosenstein, Choral Director</h3>
+                <p>Susan S. Rosenstein, a gifted conductor, accompanist, pianist, organist, and teacher, has contributed to Los Angeles audiences and musicians in a variety of venues for over 50 years. As director of the Brentwood Palisades Chorale since 1987, Susan’s upbeat, engaging rehearsals have continued to draw members, both old and new, to the group. She has taught more than forty major choral works, including everybody’s favorite requiems (Mozart, Verdi, Brahms, Fauré), oratorios (Handel, Haydn, Bach, Mendelssohn), magnificats (Bach, Rutter), innumerable masses, Karl Orff’s Carmina Burana, Morten Lauridsen’s Lux Aeterna, and Ernest Bloch’s Avodath Hakodesh (Sacred Service). In addition to her work with the Chorale, Susan serves as Music Director of Wilshire Boulevard Temple and Associate Conductor of the SoCal Chorale, collaborating with Mary Lou Basaraba in preparing choirs for performances with the California Philharmonic, Golden State Pops Orchestra, Los Angeles Film Orchestra, and Culver City/Marina del Rey Symphony.</p>
+            </div>
+        </section>
+
+        <!-- Orchestra and Choir -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Orchestra and Choir Members</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Orchestra Members</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <strong>First Violin</strong><br>
+                        Monica Minden** (Concertmaster), Helen Bendix, Jeff Corwin, Doug Green, Bruce Hayes, Amy Martin, Andreia Minasian, Dr. Jeff Smith
+                    </div>
+                    <div>
+                        <strong>Second Violin</strong><br>
+                        Tim Hummel*, Mary Higashi, Ingemar Hulthage, Mayumi Shiratori, Roger Soffer, Yoko Tamanoi, Andre Vanderhal, Yao Wang, Xi Xie
+                    </div>
+                    <div>
+                        <strong>Viola</strong><br>
+                        Judy Garf*, Lyn Bertles, Mary Nabours, David Quinn, Kasey Stern
+                    </div>
+                    <div>
+                        <strong>Cello</strong><br>
+                        Jan Kelley*, Nick Alvarez, Steve Baule, Pam De Almeida, Martha Doran, Marion Klein, Gwynn Lewis, Eran Marcus, Agnes Nagy, Richard Ross, Sandy Sonderling
+                    </div>
+                    <div>
+                        <strong>Bass</strong><br>
+                        Denisa Hanna*, Louis Fantasia, John Graves
+                    </div>
+                    <div>
+                        <strong>Flute/Piccolo</strong><br>
+                        Keiko Okamoto*, Paul Henning, Judy Collas
+                    </div>
+                    <div>
+                        <strong>Oboe/English Horn</strong><br>
+                        Melissa Leicester*, Cathi Conn
+                    </div>
+                    <div>
+                        <strong>Clarinet</strong><br>
+                        Daryl Golden*, Oma Skyrus
+                    </div>
+                    <div>
+                        <strong>Bassoon</strong><br>
+                        Michael Sandler*, Theresa Harvey, Heather Cano, Stan Tyler
+                    </div>
+                    <div>
+                        <strong>French Horn</strong><br>
+                        Cavit Celayir-Monesis*, Bob Stern, Susan Edwards, Frank Fox
+                    </div>
+                    <div>
+                        <strong>Trumpet</strong><br>
+                        Michael Rotman*, Russ Mullen, Ryan Jordan, Rob Sack
+                    </div>
+                    <div>
+                        <strong>Trumpet Off-Stage</strong><br>
+                        Zoe Mark, Nicholas Washburn, Jackson Bacon, Sean Zender
+                    </div>
+                    <div>
+                        <strong>Trombone</strong><br>
+                        Mark Geiger*, David Horwitz, Bill McDaniel
+                    </div>
+                    <div>
+                        <strong>Cimbasso</strong><br>
+                        Jasper Kugler*
+                    </div>
+                    <div>
+                        <strong>Percussion</strong><br>
+                        Dan Shevitz*, Stan Hecht
+                    </div>
+                </div>
+                <p class="mt-2">**Concertmaster, *Principal</p>
+
+                <h3 class="text-xl font-semibold mt-4">Brentwood Palisades Chorale Members</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <strong>Sopranos</strong><br>
+                        Sarah Allen, Paula Block-Levor, Dorli Burge, Renée Burkett Stuppler, Susan Buttros, Angela de Mott, Sylvia Grieb, Rosalie Huntington, Connie Kamm, Patricia McLaughlin, Phyllis Moberly, Vicki Paterno, Joan Plotkin, Denise Quan, Elizabeth Beerman Rothhart, Katie Rudner, Sarabanda, Pamela Summit, Maya Vitrano
+                    </div>
+                    <div>
+                        <strong>Altos</strong><br>
+                        Doris Abrahams, Jeanne Black, Denise Buckner, Mary Figoten, Karen Jessen-Stecher, Karen Keenan, Monica Khan, Lisa Klig, Susan Marion, Lauren Pardini, Sarah Pathania, Anne Richards, Barbara Roe, Linda Rudell-Betts, Karen Sarachik, Rima Snyder, Ayako Takano, Elizabeth White, Gretchen Woelfle, Joan Woodson, Marcia Zimmer
+                    </div>
+                    <div>
+                        <strong>Tenors</strong><br>
+                        Carter Dean, Randall Garrou, Kevin Hearst, Cecilia Keehan, Todd Kolberg, Loong Kong, Lawrence Miller, Joe Powe, Philip Roe, Frances Viggiani
+                    </div>
+                    <div>
+                        <strong>Basses</strong><br>
+                        John Betts, Eugene Carbajal, Gordon DeVol, Kurt Eggert, Bryce Eller, Paul Junger, Martin Mach, Leo Martyn, David Partie, Skip Perkins, Jim Raycroft, Jeffrey Richards, Angus Strachan
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About the Palisades Symphony -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">About the Palisades Symphony</button>
+            <div class="accordion-content">
+                <p>The Palisades Symphony was started in 1966 by Joel B. Lish. In 1965 Joel was hired to teach music at Palisades High School. Finding that he had some very good music students at Pali High, Joel started the orchestra in order to provide them with an additional opportunity to play orchestral music. In this endeavor, Joel was incredibly fortunate to meet Eva Holberg, a Pacific Palisades music-lover and volunteer, who became the President of the orchestra and ran it successfully for more than 50 years until her death at 91 in 2022.</p>
+                <p>After he retired from full-time teaching in 1995, Joel had more time to devote to his other career as a professional violist. He performed casual, strolling, chamber, and orchestral music with many ensembles, and he also played on many films and television shows. He conducted other groups, such as the Los Angeles Mandolin Orchestra and the Casa Italiana Opera Company. Joel also made wonderful arrangements for string ensembles—duets, trios and quartets.</p>
+                <p>The Palisades Symphony always stood at the center of Joel’s activities. It is a true community orchestra, as all musicians volunteer their services. Joel was gratified to know that his beloved orchestra would be able to continue under the very capable leadership of Denisa Hanna and Dr. Maxim Kuzin.</p>
+            </div>
+        </section>
+
+        <!-- Brentwood Palisades Chorale -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Brentwood Palisades Chorale</button>
+            <div class="accordion-content">
+                <p>The Brentwood Palisades Chorale was founded in 1963 as one of the Adult Choruses of the City of Los Angeles. As such, the choir practiced under the direction of the late Frances Cain and performed not only with the Palisades Symphony, but also with the Brentwood Symphony, the Beach Cities Symphony, and the City of Los Angeles Combined Choruses at the Dorothy Chandler Pavilion. After the spring concert in 1987, Ms. Cain retired, and Susan S. Rosenstein was selected to be the Chorale’s director. The singers rehearse from September through May and perform with the orchestra each year in December and May. In its almost 60 years, the Chorale has performed with the Palisades Symphony and has introduced most of the classical choral literature to the Palisades and surrounding communities, all free of charge. The chorale will begin rehearsing its next concert at the end of this summer. New members are always welcome (no audition is required!) and may request information at any time by emailing Susan Rosenstein at <a href="mailto:brentwoodpalisadeschorale@gmail.com">brentwoodpalisadeschorale@gmail.com</a>.</p>
+            </div>
+        </section>
+
+        <!-- Board of Directors -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Board of Directors</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Palisades Symphony Board of Directors, 2024-2025 Season</h3>
+                <ul class="list-disc pl-6">
+                    <li>President: Denisa Hanna</li>
+                    <li>Vice-President: Katie Rudner</li>
+                    <li>Secretary: Sue Edwards</li>
+                    <li>Treasurer: Melissa Leicester</li>
+                    <li>Stage Manager: Ingemar Hulthage</li>
+                    <li>Webmaster: Bruce Hayes</li>
+                    <li>Orchestra Personnel: Denisa Hanna</li>
+                    <li>Orchestra Librarian: Mary Figoten</li>
+                    <li>Publicity: Gwynn Lewis</li>
+                    <li>Concert Programs: Jan Kelley</li>
+                    <li>Concert Refreshments: Cathryn Conn</li>
+                    <li>At-large Member: Judy Garf</li>
+                    <li>Young Artists Competition: Saundra Sonderling</li>
+                    <li>Music Director: Dr. Maxim Kuzin (ex officio member)</li>
+                    <li>Choral Director: Susan S. Rosenstein (non-board member)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Donors -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Donors</button>
+            <div class="accordion-content">
+                <h3 class="text-xl font-semibold">Palisades Symphony General Fund</h3>
+                <p>Thank you to our wonderful donors for your help in keeping the Palisades Symphony going!</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <p>AAM & JSS Charitable Fund<br>Doris Abrahams<br>Young Ae Won<br>Lawrence Arnstein<br>Helen Bendix<br>Paula Block-Levor<br>Dorli Burge<br>E & S Cederbaum<br>Kyungsun Chang<br>Yvonne Chang<br>Miles Clay<br>Judith Collas<br>Cathy Conn<br>Karen Cramer*<br>Ruth Curran*<br>Julie Da Vanzo<br>Martha Doran<br>K. Bryce Eller<br>Lisa Eltinge*<br>Carole L. Eule<br>Mary Figoten<br>Joshua Finkel*<br>Kenneth Frese</p>
+                    </div>
+                    <div>
+                        <p>Amelita Delorico Frunsdal<br>Judy Garf<br>Harriet Glaser<br>Eric Gordon*<br>Catherine Graenicher*<br>Sandy Green*<br>Emilio Guilani*<br>Anthony Guthro<br>Susan B. Hamilburg<br>Kae Hammond*<br>Denisa Hanna<br>Kathleen Harris<br>Bruce P. Hayes<br>Stanley Hecht<br>Julie Hendricks<br>Mary Higashi<br>Christine Holton<br>David Horwitz<br>Timothy Hummel<br>Karen Jessen-Stecher<br>Nina Kaplan<br>Richard D. Kellam**<br>Joe Kim</p>
+                    </div>
+                    <div>
+                        <p>Lucy Kim<br>Maewook Kim<br>Marion Klein*<br>Suzanne Kleinbub<br>D.A. Lee<br>Gwynn Lewis<br>Natalie Levine<br>June Lissandrello<br>Kurt MacInnis<br>Dwight & Rhoda Makoff<br>Dianne Manke-Sleeper<br>Leo P. Martyn<br>Julie L. Metz*<br>Richard Z. Meyer<br>Vance & Patricia Meyer<br>Andreia Minasian<br>Monica Minden<br>Sarabanda - Moondance<br>Michael Munson<br>Christine Odionu*<br>Ann Olsen*<br>Jane S. Permaul<br>Rojan & Vesna Petrovic<br>Romana Pichel<br>Joan Plotkin<br>Diana Ray-Goodman<br>Mimi Rose<br>Kathryn Rudner<br>Michael L. Sandler<br>Reed Saxon<br>Jean Sharp*<br>Mayumi Shiratori<br>Heide W. Shirley*<br>Sidney Stern Memorial Trust<br>Rena Sonshine<br>Judy Spector<br>Robert Stern<br>Yoko Tamonoi<br>Kaori Tanegashima<br>Andre Vanderhal MD<br>Thomas D. Weese*<br>David Claudia Weiner<br>Patricia Welch<br>Carole White<br>Elizabeth White<br>George Wolkon<br>Joan Woodson<br>Wi Young Oh<br>Marina Zaninovic</p>
+                    </div>
+                </div>
+                <p class="mt-2">* In memory of Joel B. Lish<br>** In memory of John M. Kellam</p>
+            </div>
+        </section>
+
+        <!-- Acknowledgments -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <h2 class="text-2xl font-bold">Acknowledgments</h2>
+            <p>We extend our heartfelt gratitude to the Church of Jesus Christ of Latter-day Saints, Wilshire Boulevard Temple Resnick Family Campus, Belmont Village Senior Living in Westwood, and the Palisades Lutheran Church for their wonderful generosity and for providing a welcoming home for our orchestra and chorus.</p>
+            <p>After the fire our performances might have stopped altogether and our Palisades musicians would have scattered to other opportunities if it were not for the help and generosity of many others. Our 130 members are grateful to all who expressed interest and for their physical and financial support.</p>
+            <p>In Our Hearts Forever: Joel Lish and Eva Holberg</p>
+        </section>
+
+        <!-- Upcoming Concert -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <h2 class="text-2xl font-bold">Upcoming Concert</h2>
+            <p><strong>Sunday, June 29, 2025</strong><br>"The Best of Broadway: Decade by Decade"<br>Venue: TBA (due to the Palisades fire aftermath affecting our organization)</p>
+        </section>
+
+        <!-- Contact and Support -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <h2 class="text-2xl font-bold">Contact and Support</h2>
+            <p>Palisades Symphony<br>P.O. Box 214, Pacific Palisades, CA 90272<br><a href="mailto:ContactPalisadesSymphony@gmail.com">ContactPalisadesSymphony@gmail.com</a><br><a href="http://www.palisadessymphony.org" target="_blank">www.palisadessymphony.org</a></p>
+            <p>The Palisades Symphony is a nonprofit 501(c)3 organization. We now can accept donations through Zelle.</p>
+        </section>
+
+        <!-- JavaScript for Accordion -->
+        <script>
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    content.classList.toggle('active');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
