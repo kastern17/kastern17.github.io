@@ -1,0 +1,360 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palisades Symphony - June 29, 2025</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+        .accordion-button {
+            background-color: #4a5568;
+            padding: 15px;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1.5rem;
+            color: #e2e8f0;
+        }
+        .accordion-content {
+            display: none;
+            padding: 20px;
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+        .accordion-content.active {
+            display: block;
+        }
+        h1, h2, h3 {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        h1 {
+            font-size: 2.5rem;
+        }
+        h2 {
+            font-size: 2rem;
+        }
+        h3 {
+            font-size: 1.75rem;
+        }
+        a {
+            color: #63b3ed;
+        }
+        a:hover {
+            color: #90cdf4;
+        }
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.75rem;
+            }
+            p, li {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div class="container mx-auto p-4 sm:p-6">
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <h1>Palisades Symphony</h1>
+            <p class="text-2xl">Dr. Maxim Kuzin, Music Director</p>
+            <p class="text-2xl">June 29, 2025 • 4:00 P.M.</p>
+        </header>
+
+        <!-- Concert Details -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <h2 class="text-center">The Best of Broadway: Decade by Decade</h2>
+            <p class="text-center mt-2">Emcee: Rich Capparela (KUSC)</p>
+            <p class="text-center">Featured Soloists: Margaryta Kuzina, Matthew Peterson, Caroline Turner</p>
+            <p class="text-center">Guest Conductor: Andrew Karatay</p>
+            <p class="text-center">Conductor: Maxim Kuzin</p>
+            <p class="text-center mt-4">Heart of LA (HOLA) Arts & Recreation Center<br>615 S La Fayette Park Place, Los Angeles, CA 90057</p>
+            <p class="text-center mt-4">Enjoy 130 years of Broadway iconic hits decade by decade—Sousa to ABBA—in a free, family-friendly outdoor concert!</p>
+            <p class="text-center font-bold">FREE ADMISSION | DONATIONS WELCOME</p>
+        </section>
+
+        <!-- Message from the President -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Message from the President</button>
+            <div class="accordion-content">
+                <p><em>Denisa Hanna, President, Palisades Symphony</em></p>
+                <p>Dear Friends and Supporters,</p>
+                <p>It is with heartfelt joy that I welcome you to “The Best of Broadway: Decade by Decade”—a musical celebration that spans over 130 years of beloved melodies brought to life under the open sky.</p>
+                <p>We are deeply grateful to our hosts at Heart of Los Angeles (HOLA), a remarkable community organization and partner of the LA Philharmonic’s YOLA program, for generously sharing their vibrant Lafayette Park campus with us. This marks our fourth new venue since the devastating Palisades fire earlier this year. Each new setting comes with fresh challenges—but also with powerful opportunities to bring our music to new communities and to share our story of resilience and hope.</p>
+                <p>I extend our warmest thanks to our exceptional soloists: soprano Margaryta Kuzina, baritone Matthew Peterson, and child soprano Caroline Turner, whose artistry today bridges generations and styles. We are also honored to welcome our emcee for this event, the inimitable KUSC host Rich Capparela. His voice and presence are a gift to our audience and our orchestra alike.</p>
+                <p>As we continue our journey through displacement and renewal, we do so buoyed by your support. The Palisades Symphony is an entirely volunteer-driven organization—every musician on stage, every board member, and every concert is made possible by the generosity of our community. Thanks to you, we can keep our concerts free and accessible, and continue presenting world-class programs that uplift, educate, and inspire.</p>
+                <p>Our story of recovery was recently featured on the front page of the Los Angeles Times and in KUSC’s Notes from the Fires with John Rabe. These moments of recognition affirmed what we have long known: that music has the power to restore and reconnect, even in the most uncertain times. And yet, we still have a long road ahead. We remain without a permanent home. Your continued support—whether through donations, attendance, or simply sharing our story—helps keep this orchestra alive and thriving.</p>
+                <p>Thank you for joining us today and for believing in the power of music. Enjoy the show!</p>
+                <p>With gratitude,<br>Denisa Hanna<br>President, Palisades Symphony Orchestra</p>
+            </div>
+        </section>
+
+        <!-- Program Notes -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Program Notes</button>
+            <div class="accordion-content">
+                <p><em>Curated by Dr. Maxim Kuzin</em></p>
+                <button class="accordion-button">1890s – John Philip Sousa’s “El Capitan” (1896)</button>
+                <div class="accordion-content">
+                    <p>Our journey begins with the spirited march from El Capitan, Sousa’s most popular operetta. The show opened at the Broadway Theatre on April 20, 1896 and logged 112 performances, followed by a week-long return engagement uptown, bringing its New York total to 120 performances—a bona-fide hit by 1890s standards. El Capitan then toured North America for years and conquered London’s West End in 1899, while its rousing title march became a lasting band classic. Brimming with military-band exuberance, the piece reminds us that early Broadway drew heavily on operetta, patriotic pageantry, and Sousa’s own American zest—setting the stage for the decades of musical evolution to come. At this concert, you’ll hear the march in a brilliant full-orchestra version, unleashing its color and power in all its glory.</p>
+                </div>
+                <button class="accordion-button">1900s – Victor Herbert’s “Kiss Me Again” from Mlle. Modiste (1905)</button>
+                <div class="accordion-content">
+                    <p>No survey of early Broadway is complete without Victor Herbert, the Irish-American composer who ruled the turn-of-the-century stage with his romantic operettas. Mlle. Modiste opened on Christmas Day 1905 at the Knickerbocker Theatre and scored a hit run of 202 performances—remarkable for its day. Its breakout number, “Kiss Me Again,” a lilting waltz sung by the lead soprano, Fifi, is dripping with old-world charm and operetta’s swooning romance. So beloved was the tune that it was reissued as stand-alone sheet music in 1915 and remained a concert-hall favorite for decades. The song’s enduring popularity exemplifies the Belle Époque appetite for beautiful melodies and sentimental lyrics, and it stands as a quintessential example of the elegant, European-inflected Broadway sound that dominated the 1900s. Our featured soloist Margaryta Kuzina will illuminate this classic.</p>
+                </div>
+                <button class="accordion-button">1910s – Jerome Kern’s “Till the Clouds Roll By” from Oh, Boy! (1917)</button>
+                <div class="accordion-content">
+                    <p>The 1910s witnessed the birth of true American musical comedy, and Jerome Kern led the charge. Opening at the intimate Princess Theatre, Oh, Boy! delighted New York for an extraordinary 463 performances, the longest run of any “Princess musical.” Its hit tune “Till the Clouds Roll By,” with its hummable melody and witty lyrics, captured World-War-I-era optimism so completely that a 1946 Hollywood biopic about Kern borrowed the song’s title. Tonight you’ll hear a sparkling instrumental version created for The Bell Telephone Hour—NBC’s long-running radio/TV series (1940-1968) that broadcast Broadway and classical music to millions, preserved lavish orchestrations, and helped keep show tunes in America’s living rooms during and after the war. Our guest conductor and music-preparation specialist Andrew Karatay leads this tribute to the early American musical’s grace, sophistication, and enduring joy.</p>
+                </div>
+                <button class="accordion-button">1920s – George Gershwin’s “The Man I Love” (1924)</button>
+                <div class="accordion-content">
+                    <p>Few songs illustrate Jazz-Age Broadway’s cross-pollination of jazz, blues, and popular song better than this torch ballad by George and Ira Gershwin. Originally written for Lady, Be Good! (1924) and later tried in Strike Up the Band (1927) and Rosalie (1928), the number was cut from every show—yet its life offstage was spectacular. Lady Edwina Mountbatten helped popularize it in London, publisher Max Dreyfus pushed it in New York, and by 1928 over 100,000 copies had sold while early recordings by Marion Harris, Sophie Tucker, and Paul Whiteman turned it into an international hit. In 1934–35 it even served as the theme of Gershwin’s CBS radio show “Music by Gershwin”. The song’s bluesy harmony and yearning melody made it a staple of the Great American Songbook—and the title of a 1947 Hollywood film noir. Our duet version, sung by Margaryta Kuzina and Matthew Peterson, lets you hear the sultry, jazz-inflected sound of 1920s Broadway and pays tribute to the Gershwins’ enduring genius.</p>
+                </div>
+                <button class="accordion-button">1930s – Cole Porter’s “Anything Goes” – Overture (1934)</button>
+                <div class="accordion-content">
+                    <p>In the depths of the Great Depression, Cole Porter delivered a bright shot of wit and glamour with Anything Goes. The show opened at the Alvin Theatre (now the Neil Simon) on November 21, 1934 and racked up 420 performances—one of the decade’s longest runs—anchored by Ethel Merman’s star-making turn as Reno Sweeney alongside William Gaxton and Victor Moore. Porter’s effervescent score, orchestrated for the pit by Robert Russell Bennett and later arranged for concert performance by Hans Spialek, turned songs such as “Anything Goes,” “All Through the Night,” “You’re the Top,” and “Blow, Gabriel, Blow” into instant standards. Tonight’s Spialek Overture stitches those four hits into a brassy, jazz-inflected whirlwind that embodies 1930s Broadway’s escapist sparkle. High-spirited, sophisticated, and irresistibly optimistic, it shows why Porter’s ocean-liner romp became a defining hit of its era—even as audiences weathered hard economic seas.</p>
+                </div>
+                <button class="accordion-button">1940s – Richard Rodgers & Oscar Hammerstein II’s “If I Loved You” from Carousel (1945)</button>
+                <div class="accordion-content">
+                    <p>After changing Broadway forever with Oklahoma! (1943), Rodgers & Hammerstein unveiled Carousel at the Majestic Theatre on April 19, 1945. The show—an American re-imagining of Ferenc Molnár’s 1909 play Liliom, transplanted from Budapest to the rocky coast of Maine—ran an impressive 890 performances, confirming its place at the heart of Broadway’s Golden Age. Orchestrated for the original production by Don Walker, “If I Loved You” forms the celebrated “bench scene,” where carnival barker Billy Bigelow and millworker Julie Jordan tentatively explore feelings they cannot quite voice. Here Rodgers & Hammerstein pioneered the conditional love song, letting characters dream aloud “if” they loved each other—a structural leap Stephen Sondheim called “probably the single most important moment in the evolution of contemporary musicals.” First sung by John Raitt and Jan Clayton, the duet’s soaring melody became a 1945 pop hit for Frank Sinatra, Perry Como, and others. Tonight, in Walker’s lush original orchestration, Margaryta Kuzina and Matthew Peterson recreate this landmark of musical-theatre storytelling, paying tribute to the Romantic sweep and emotional depth that defined 1940s Broadway.</p>
+                </div>
+                <button class="accordion-button">1950s – Leonard Bernstein’s “West Side Story” Overture (1957)</button>
+                <div class="accordion-content">
+                    <p>Nothing captures mid-century Broadway ambition quite like West Side Story. When it opened at the Winter Garden Theatre on September 26, 1957, its daring mix of symphonic writing, Afro-Caribbean jazz, electric Latin percussion, and Jerome Robbins’ kinetic choreography stunned critics and audiences alike. The show ultimately racked up 732 Broadway performances—a respectable run for the era—before closing in June 1959 and immediately launching a national tour and record-setting film adaptation. Its fearless portrait of immigrant life, gang violence, and forbidden love proved that musicals could tackle urgent social issues without sacrificing melody or dance. Maurice Peress’s West Side Story “Overture” transforms Leonard Bernstein’s iconic Broadway score into a thrilling orchestral showpiece. Peress—a respected conductor who served as Bernstein’s assistant at the New York Philharmonic—arranged this overture to showcase Bernstein’s music with full symphonic grandeur. In four dramatic sections, it sweeps from the tense gang ensemble before the “Rumble” fight into the romantic duet “Tonight,” then the yearning ballad “Somewhere (There’s a Place for Us),” and finally an exuberant “Mambo” dance explosion. The overture’s high drama, vibrant rhythms, and lyrical warmth shine a spotlight on Bernstein’s genius as both a theatrical tunesmith and an orchestral composer.</p>
+                </div>
+                <button class="accordion-button">1960s – John Kander’s “Cabaret” from Cabaret (1966)</button>
+                <div class="accordion-content">
+                    <p>Nothing evokes the restless spirit of the late ’60s quite like this two-minute, utterly recognizable burst of brass, clarinet, and percussion that opens with a wink and a snap. When Cabaret premiered at the Winter Garden on November 20, 1966, its daring blend of jazz-tinged tunes, political edge, and Joel Grey’s puckish Emcee helped the show log 1,165 performances before closing in 1969, proving that a musical could confront social upheaval without losing its razzle-dazzle. Framed in the decadent Kit Kat Klub of pre-war Berlin, the title song’s deceptively upbeat cry to “live life as a cabaret” masks an undercurrent of impending doom—one of Broadway’s first examples of a concept number serving ironic commentary rather than simple plot propulsion. In our instrumental version, slinky clarinets and smoky brass conjure a 1930 Berlin pit band, capturing both the showbiz sparkle and the lurking desperation that defined a new era of sophisticated, socially aware storytelling. Cabaret paved the way for everything from Chicago to Hamilton, and we’ve chosen this brassy anthem to launch the second half of The Best of Broadway: Decade by Decade—an irresistible curtain-raiser that dazzles even while warning of darkness ahead.</p>
+                </div>
+                <button class="accordion-button">1970s (Part 1) – Charles Strouse’s “Tomorrow” from Annie (1977)</button>
+                <div class="accordion-content">
+                    <p>The late ’70s produced a family musical that felt like a golden-age throwback yet still broke new ground: Annie, which opened at the Alvin Theatre on April 21, 1977, and logged an impressive 2,377 Broadway performances before closing in 1983. We’ve chosen two pieces to represent the decade because composer Charles Strouse passed away earlier this year, and we wish to honor his memory. “Tomorrow,” Annie’s calling-card anthem, is only two minutes long yet instantly recognizable from its first optimistic notes. Its simple, uplifting melody and Martin Charnin’s heartfelt lyrics struck a powerful chord with audiences weathering the economic headwinds of the 1970s, just as the show’s Depression-era storyline mirrored hard times. Strouse—whose legacy also includes scores for Bye Bye Birdie and Applause—left an indelible mark on American musical theatre, winning three Tony Awards and inspiring generations of young performers. Our child soloist Caroline Turner captures Annie’s irrepressible hope, making this beloved song a fitting tribute to Strouse and a shining beacon within our 1970s segment.</p>
+                </div>
+                <button class="accordion-button">1970s (Part 2) – Andrew Lloyd Webber’s “Jesus Christ Superstar” Medley (1970)</button>
+                <div class="accordion-content">
+                    <p>At the very start of the 1970s, Broadway (and the West End) were rocked by a new phenomenon: the rock musical. Andrew Lloyd Webber and Tim Rice’s Jesus Christ Superstar began as a concept album in 1970 and exploded onto stage in 1971, blending rock and roll with Biblical themes in a bold, contemporary retelling of the last days of Jesus. The music of Superstar was unlike anything Broadway had heard: electric guitars, driving percussion, and passionate, belt-worthy songs that appealed to the rock generation. Our orchestra will play a medley of Jesus Christ Superstar themes, including the overture’s dramatic rock motifs, the reflective trio “Everything’s Alright,” Mary Magdalene’s gentle ballad “I Don’t Know How to Love Him,” the sardonic “King Herod’s Song,” and the title song “Superstar” with its explosive energy. Even without vocals, you’ll sense the groove and intensity that made this show a hit. We chose this piece to showcase the seismic shift in Broadway sound during the early ‘70s—suddenly rock music and youth culture became part of the mainstream musical theatre vocabulary. Jesus Christ Superstar opened the door for many more rock-based shows and ushered in the era of the rock opera, marking the 1970s as a decade of experimentation and genre expansion on Broadway.</p>
+                </div>
+                <button class="accordion-button">1980s – Andrew Lloyd Webber’s “The Phantom of the Opera” Selections (1986)</button>
+                <div class="accordion-content">
+                    <p>If one composer dominated Broadway (and the West End) in the 1980s, it was Andrew Lloyd Webber. The Phantom of the Opera, which opened on Broadway in 1988, became the most successful of all, holding the record as Broadway’s longest-running show with over 13,000 performances across 35 years and winning seven Tony Awards, including Best Musical that same season. The original Broadway cast reunited Michael Crawford (the Phantom) and Sarah Brightman (Christine), both stars of the London premiere, whose recording was the first British cast album to debut at No.1 and has since sold more than 40 million copies worldwide. This sweeping romantic musical brought a lush, almost operatic score to Broadway, enhanced by legendary stagecraft—most famously the crashing chandelier and seamless set changes—that made it a “must-see” spectacle. Our medley of Phantom themes will feature the thrilling title theme (with its rock-inflected organ riff), “Think of Me,” “All I Ask of You,” and “The Music of the Night.” Presenting Phantom allows us to highlight the mega-musical era of the 1980s—a time of grand-scale productions, lavish scores, and international hits. With its blend of classical motifs and modern pop sheen, Phantom’s music—and the global wave of productions it inspired—sealed Webber’s legacy as one of musical theatre’s most influential figures, proving that musicals could be spectacles that still carried a deeply emotional core.</p>
+                </div>
+                <button class="accordion-button">1990s – Alan Menken’s “Beauty and the Beast” Overture (1994)</button>
+                <div class="accordion-content">
+                    <p>The 1990s saw Broadway revitalized by new creative forces, and one of the most influential was Disney’s entry onto the Great White Way. Beauty and the Beast—Disney’s first Broadway adaptation—opened in 1994, igniting the “Disney on Broadway” phenomenon. Composer Alan Menken, with lyricists Howard Ashman and Tim Rice, transformed his beloved film score into a sweeping theatrical soundscape, enriched with new stage numbers. Winner of more Academy Awards than any other living composer, Menken has become a defining voice of modern musical theatre, seamlessly bridging Hollywood and Broadway. Our concert presents an overture that blends themes spanning the animated movie, the Broadway musical, and the later live-action film: “Belle,” “Gaston,” “The Mob Song,” “How Does a Moment Last Forever,” “Beauty and the Beast,” and “Evermore.” Ann Hould-Ward’s Tony-winning costumes—and Stanley Meyer’s storybook scenic design—helped set a new standard for Broadway spectacle. Since its debut, Beauty and the Beast paved the way for Disney’s later Broadway successes, including The Lion King and Aladdin. By including Menken’s overture—steeped in grand melody and fairy-tale wonder—we celebrate how the 1990s brought cinematic scope, family-friendly magic, and fresh artistic vitality to Broadway.</p>
+                </div>
+                <button class="accordion-button">2000s – Music of ABBA – “Mamma Mia!” Medley (2001)</button>
+                <div class="accordion-content">
+                    <p>The grand finale of our program catapults us into the 21st century with a burst of pure, sun-drenched joy. When Mamma Mia! opened on Broadway in 2001, it instantly redefined the jukebox musical: built around ABBA’s beloved catalog, it ran 5,758 performances—still the ninth-longest-running show in Broadway history—and has now been seen by more than 60 million people in over 60 countries. Audiences connected not just to the irresistibly catchy music but to its universally relatable story of love, family, and self-discovery set against a Greek-island backdrop and driven by strong, independent female characters. Our orchestral medley highlights the show’s biggest hits: the dreaminess of “I Have a Dream,” the giddy energy of “Mamma Mia” and “Dancing Queen,” the romantic bounce of “Take a Chance on Me,” and the stirring emotion of “The Winner Takes It All.” Hearing these anthems in symphonic splendor—traded among soloists Margaryta Kuzina, Matthew Peterson, and Caroline Turner—turns the hall into one big sing-along. Mamma Mia! perfectly embodies the 2000s Broadway trend toward feel-good, nostalgia-driven spectacles that welcome every generation; closing our century-spanning journey with this medley sends the audience home on the highest of high notes, joyfully thanking ABBA—and Broadway—for “the music.”</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biographies -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Biographies</button>
+            <div class="accordion-content">
+                <button class="accordion-button">Dr. Maxim Kuzin (Music Director)</button>
+                <div class="accordion-content">
+                    <p>Dr. Maxim Kuzin was born in Ukraine. He has emerged as a versatile orchestral and choral conductor and educator, captivating audiences and musicians across the world with his passion and expertise. He currently holds positions as Music Director for the Palisades Symphony Orchestra and the Thousand Oaks Philharmonic. Previously, he has been leading UC Santa Barbara Chamber Orchestra for 7 years. As choral conductor, Dr. Kuzin also co-directs the Hankuk University of Foreign Studies Chorale in Los Angeles.</p>
+                    <p>Dr. Kuzin’s path began in Kyiv, the capital of Ukraine, where he honed his skills at the prestigious Lysenko Specialized Boarding Music School and the Tchaikovsky National Musical Academy of Ukraine, completing advanced studies in both choral and orchestral conducting with legendary Ukrainian conductors, Yevhen Savchuk and Roman Kofman. He later earned a Doctorate of Musical Arts in Orchestral Conducting from UCLA, studying under Neal Stulberg. His experience in Ukraine included working closely with leading institutions such as the Tchaikovsky National Music Academy and the Reinhold Glier Institute of Music. He also led the Opera Program at the Dnipro Glinka Conservatory overseeing the artistic development of young talent.</p>
+                    <p>Throughout his career, Dr. Kuzin has led some of Eastern Europe’s most prestigious orchestras, including the National Symphony and National Philharmonic Orchestras of Ukraine, the National President’s Orchestra of Ukraine as well as the National Symphony Orchestra of Georgia and the Vladivostok Philharmonic in Russia, to name a few. His passion for contemporary music led him to become Music Director for the Ricochet New Music Ensemble in Kyiv, Ukraine, bringing annually a wide variety of modern compositions to major music festivals like Music-Fest (Kyiv), Two Days & Two Nights (Odesa), Kontrasty (Lviv). While in Los Angeles, Dr. Kuzin continued his modern music engagements with Hear Now Music Festival recently dedicated to celebrating the works of living composers.</p>
+                    <p>Opera, operetta, and musicals have always been a significant part of Dr. Kuzin’s career. He has conducted over twenty productions, from classics like Rossini’s “The Barber of Seville” and Leoncavallo’s “Pagliacci” to Strauss’ “Die Fledermaus” and Lehár’s “The Merry Widow”, to Walton’s “The Bear” and Stravinsky’s “Mavra” among others. His work has spanned historic theaters across Ukraine, Russia, and the United States.</p>
+                    <p>Dr. Kuzin has also demonstrated a long-standing commitment to fostering young musicians. As Head of the Instrumental Division of the Colibri International Arts Competition for Young Performers, and his active role in the young artist competitions of both the Thousand Oaks Philharmonic and the Palisades Symphony Orchestra, many young talents offering performance opportunities and valuable guidance to the next generation of artists.</p>
+                    <p>His dedication to education was also evident through his involvement with the Philadelphia International Music Festival, where he conducted orchestras, coached chamber ensembles, and taught music theory alongside musicians from The Philadelphia Orchestra.</p>
+                    <p>A recipient of the Elaine Krown Klein Fine Arts Scholarship Award and recognized as an “Emerging Artist” by Symphony Magazine of the League of American Orchestras, Dr. Kuzin also showcased his versatility by being invited to conduct “Dancing with the Stars” TV show in Ukraine. In addition, his Harvard University lecture, titled “Opera: Why Do We Either Love or Hate It?” showcased his ability to connect with diverse audiences, exploring the profound appeal and complexity of opera. Dr. Kuzin’s journey reflects his dedication to both artistic excellence and the nurturing of future musical talent, making him an artist who continually inspires those around him.</p>
+                </div>
+                <button class="accordion-button">Andrew Karatay (Guest Conductor)</button>
+                <div class="accordion-content">
+                    <p>Andrii Karatai (also known professionally as Andrew Karatay, b. 1993) is a Ukrainian-born pianist, conductor, and acclaimed music score restoration specialist. He is currently pursuing a Master of Music in Orchestral Conducting at Azusa Pacific University under Professor Christopher Russell. Andrii brings to his work a rare combination of interpretive depth, historical insight, and technical mastery. A graduate of the Mykolaiv M. M. Arkas Music College and the Odessa National A. V. Nezhdanova Academy of Music, he has performed as both a soloist and collaborative pianist. Notably, he appeared with the Mykolaiv Symphony Orchestra in George Gershwin’s Concerto in F, and has served as an assistant conductor, orchestra librarian, and educator—testaments to his broad musicianship and leadership.</p>
+                    <p>Equally respected behind the scenes, Karatai has over 15 years of experience in historical score restoration, engraving, and orchestration. His reconstructions have revived rare and unpublished works by composers such as George Gershwin, André Kostelanetz, Johnny Green, and Thomas Griselle. His editions have been performed by distinguished ensembles including the Kyiv National Operetta Theater Symphony Orchestra, Pasadena POPS, Thousand Oaks Philharmonic, and Kaunas State Musical Theatre.</p>
+                </div>
+                <button class="accordion-button">Rich Capparela (Emcee)</button>
+                <div class="accordion-content">
+                    <p>Rich Capparela has been a familiar Southern-California voice for classical music lovers ever since he joined Classical KUSC-FM in 1980, where he still serves as senior announcer and producer. Over four decades on the air he has hosted hundreds of live concert broadcasts—including long-running partnerships with Pacific Symphony—and penned the program notes for the Los Angeles Guitar Quartet’s Grammy-nominated album LAGQ: Latin.</p>
+                    <p>In 2001 the Los Angeles City Council recognized his on-air contributions to the region’s cultural life, and his production company, Cardiff Studios, continues to create nationally syndicated features for major American orchestras.</p>
+                    <p>When the microphones are off, Rich fronts the Beatles-inspired cover band Otherwise Normal, trading the control room for a guitar and the music of the British Invasion.</p>
+                    <p>This same blend of insight, humor, and easy rapport now comes to the stage as he emcees The Best of Broadway: Decade by Decade—the Palisades Symphony’s free summer pops spectacular. Audiences can expect the trademark Capparela touch: crisp storytelling, a dash of rock-and-roll sparkle, and an abiding love of music in every style.</p>
+                </div>
+                <button class="accordion-button">Margaryta Kuzina (Soloist)</button>
+                <div class="accordion-content">
+                    <p>Margaryta Kuzina is a Ukrainian-born musical theatre performer currently pursuing her BFA in Musical Theatre at the Hartt School of Music. A proud graduate of the Los Angeles County High School for the Arts, she has portrayed a wide range of iconic roles including Veronica in Heathers, Wendla in Spring Awakening, Adele in Die Fledermaus, and Hodel in Fiddler on the Roof.</p>
+                    <p>As a featured soloist, Margaryta has performed with both the Palisades Symphony and the Marina del Rey Summer Symphony, and appeared at the Greek Theatre alongside Adam Lambert and Maya Rudolph. Her vocal range spans D3 to D6, supported by extensive training in classical voice, musical theatre, acting, and movement. Known for bringing heart, humor, and grit to every performance, Margaryta is passionate about telling stories that connect, challenge, and inspire.</p>
+                </div>
+                <button class="accordion-button">Matthew Peterson (Soloist)</button>
+                <div class="accordion-content">
+                    <p>Matthew Peterson has been praised by The Gazette for his “stunning” singing with “power and beauty,” Matthew is known for his rich voice and compelling stage presence. A Colorado native, he has performed leading roles with esteemed organizations such as Central City Opera, Opera Santa Barbara, Virginia Opera, the Colorado Ballet, and the New England Symphony. Notable operatic roles include Don Giovanni, (Figaro), Guglielmo (Così fan tutte), Silvio (Pagliacci), the Novice (Billy Budd), and the title role in Gianni Schicchi.</p>
+                    <p>Equally at home in musical theater, he has appeared as Signor Nacarelli in The Light in the Piazza and Joseph in Joseph and the Amazing Technicolor Dreamcoat.</p>
+                    <p>As a concert soloist, his repertoire includes Carmina Burana, Mozart’s Requiem, Haydn’s Creation, Vaughan Williams’ Five Mystical Songs, and Poulenc’s Le Bal Masqué. He also premiered Ode to Nature, a dance oratorio released by Albion Records. A graduate of the Yale School of Music and the University of Denver, Matthew was the first-place winner of the 2019 Denver Lyric Opera Guild competition and a regional finalist in the Metropolitan Opera’s 2023 Laffont Competition. He currently resides in Santa Barbara, where he performs with Opera Santa Barbara and teaches private voice lessons.</p>
+                </div>
+                <button class="accordion-button">Caroline Turner (Soloist)</button>
+                <div class="accordion-content">
+                    <p>Caroline Turner has been involved in musical theater since she was very young. Some of the favorite roles she has performed include Medda Larkin in Newsies with Mainstage Musical Theater, as well as Annie in Annie, Regina George in Mean Girls, and Donna in Mamma Mia!, all with the Adderley School of Music in Santa Barbara.</p>
+                    <p>Caroline is now 12 years old, and she recently graduated from the 6th grade. Outside of theater, she enjoys playing volleyball and spending time with friends. But acting has been a passion of hers since she was three years old, and she hopes to perform on Broadway one day. Caroline is thrilled and honored to be performing with the Palisades Symphony for the first time.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orchestra Members -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Orchestra Members</button>
+            <div class="accordion-content">
+                <h3>First Violin</h3>
+                <p>Monica Minden** (Concertmaster), Helen Bendix, Ann Dunn, Doug Green, Bruce Hayes, Chloe Yoon, Ephraim Yu</p>
+                <h3>Second Violin</h3>
+                <p>Tim Hummel* (Principal), Mary Higashi, George Hall, Stephanie Hodal, Ingemar Hulthage, Mayumi Shiratori, Yoko Tamanoi, Xi Xie</p>
+                <h3>Viola</h3>
+                <p>Lyn Bertles* (Principal), Mary Figoten, Mary Nabours, David Quinn, Kasey Stern</p>
+                <h3>Cello</h3>
+                <p>Jan Kelley* (Principal), Nick Alvarez, Arlette Cardenes, Martha Doran, Gwynn Lewis, Agnes Nagy, Richard Ross, Sandy Sonderling</p>
+                <h3>Bass/Guitar</h3>
+                <p>Denisa Hanna* (Principal), Heather Cano, Louis Fantasia, John Graves & Electric Bass, Matt Crawford & Electric Guitar</p>
+                <h3>Flute/Piccolo</h3>
+                <p>Keiko Okamoto* (Principal), Paul Henning, Judy Collas</p>
+                <h3>Oboe/English Horn</h3>
+                <p>Melissa Leicester* (Principal), Cathi Conn</p>
+                <h3>Clarinet/Saxophones</h3>
+                <p>Ben Winjum* (Principal), Michael Munson, Kerry Riddle, Cavit Celayir-Monesis</p>
+                <h3>Bassoon</h3>
+                <p>Michael Sandler* (Principal), Todd Tatum</p>
+                <h3>French Horn</h3>
+                <p>Nick Mitchell* (Principal), Cavit Celayir-Monesis, Susan Edwards, Frank Fox</p>
+                <h3>Trumpet</h3>
+                <p>Michael Rotman* (Principal), Rob Sack, Ryan Jordan</p>
+                <h3>Trombone</h3>
+                <p>Mark Geiger* (Principal), David Horwitz, Bill McDaniel</p>
+                <p><strong>Tuba:</strong> Sam Gonzalez</p>
+                <p><strong>Timpani/Percussion:</strong> Dan Shevitz* (Principal), Stan Hecht</p>
+                <p><strong>Keyboard:</strong> Andrew Karatay</p>
+                <p>*Principal | **Concertmaster</p>
+            </div>
+        </section>
+
+        <!-- Board of Directors -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Board of Directors</button>
+            <div class="accordion-content">
+                <h3>Palisades Symphony Board of Directors, 2024-2025 Season</h3>
+                <ul class="list-disc pl-6">
+                    <li>President: Denisa Hanna</li>
+                    <li>Vice-President: Katie Rudner</li>
+                    <li>Secretary: Sue Edwards</li>
+                    <li>Treasurer: Melissa Leicester</li>
+                    <li>Stage Manager: Ingemar Hulthage</li>
+                    <li>Publicity: Gwynn Lewis</li>
+                    <li>Orchestra Librarian: Mary Figoten</li>
+                    <li>At-large Members: Judy Garf, Kasey Stern</li>
+                    <li>Music Director: Dr. Maxim Kuzin (ex officio)</li>
+                    <li>Choral Director: Susan S. Rosenstein (non-board member)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Donors -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Donors</button>
+            <div class="accordion-content">
+                <h3>Palisades Symphony General Fund</h3>
+                <p>Thank you to our wonderful donors for your help in keeping the Palisades Symphony going!</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <p>AAM & JSS Charitable Fund<br>Denisa Hanna<br>Victoria Paterno<br>Doris Abrahams<br>Young Ae Won<br>Bruce P. Hayes<br>Stanley Hecht<br>Julie Hendricks<br>Ebba Herritt<br>Mary Higashi*<br>David Horwitz<br>Timothy Hummel<br>Rosalie Huntington<br>Karen Jessen-Stecher<br>Richard Johnson<br>Suzanne W. Kagan<br>Constance von Briesen Kamm<br>Nina Kaplan<br>Mira Karlovac<br>Richard D. Kellam***<br>Mimi Keller<br>Kester Family Trust<br>Jae K. Kim<br>Joe Kim<br>Lucy Kim<br>Maewook Kim<br>Marion Klein*<br>Suzanne Kleinbub*<br>Barbara Korin<br>Elaine Koyama<br>Wendy Lazarus<br>D.A. Lee<br>Claude LeFeuvre<br>L. Levine<br>Gwynn L. Lewis<br>Natalie Levine<br>S. Levine<br>June Lissandrello<br>Karen L. MacDonald<br>Kurt MacInnis<br>Dwight & Rhoda Makoff<br>Dianne L. Manke-Sleeper<br>Maureen Martorano<br>Leo P. Martyn<br>Julie L. Metz*<br>Richard Z. Meyer<br>Vance & Patricia Meyer<br>Edward Moondance**<br>Michael Munson<br>Christine Odionu*<br>Debbie Osterholt<br>Elysia Ouyang<br>Christine Palmer<br>Peg Pashkow<br>Pilgrim Lutheran Church<br>Joan Plotkin*<br>Debbie Rafei<br>Diana Ray-Goodman<br>Mimi Rose<br>Rose Trust<br>Marilyn Rosen<br>Susan Rosenstein<br>Emily Roth<br>Barbara Rubens<br>Nina Rubin<br>Kathryn Rudner<br>Sherri Salea<br>Sarabanda**<br>Denise Sasaki<br>Michael L. Sandler<br>Reed Saxon<br>Jean Sharp*<br>Mayumi Shiratori<br>Heide W. Shirley*<br>Mehrdad,Natalie Shokoohv<br>Sidney Stern Memorial Trust<br>Carmen Silva<br>Andreia Minasian Silvera<br>Simpson Family Trust<br>Rena Sonshine<br>Judy Spector<br>Robert Stern<br>Diane Sternfels<br>Eileen Sugiura<br>Yoko Tamonoi*<br>Phebe Tanners<br>Kaori Tanegashima<br>Kay A. Tomborg<br>Marcella Tong<br>Andre Vanderhal MD<br>Frances Viggiani<br>Vroon Trust - Ronald & Gail<br>David Walter<br>Abby Wanamaker<br>Yao Wang*<br>Thomas D. Weese*<br>David & Claudia Weiner<br>Patricia Welch<br>Carole White<br>Elizabeth White<br>Pastor Williams<br>George Wolkon<br>Joan Woodson<br>Wi Young Oh<br>Marina Zaninovic<br>Marcia Zimmer<br>Anjelo Zuniga-Ga</p>
+                    </div>
+                </div>
+                <p class="mt-2">*In memory of Joel B. Lish **In memory of Eva Holberg ***In memory of John M. Kellam #In honor of Denisa Hanna</p>
+            </div>
+        </section>
+
+        <!-- About Palisades Symphony -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">About Palisades Symphony</button>
+            <div class="accordion-content">
+                <p>The Palisades Symphony was started in 1966 by Joel B. Lish. Joel started teaching music at Palisades High School in 1965. Finding that he had some very good music students at Pali High, Joel started the orchestra in order to provide them with an additional opportunity to play orchestral music. In this endeavor, Joel was incredibly fortunate to meet Eva Holberg, a Pacific Palisades music-lover and volunteer, who became the President of the orchestra and ran it successfully for more than 50 years until her death at 91 in 2022.</p>
+                <p>After he retired from full-time teaching in 1995, Joel had more time to devote to his other career as a professional violist. He performed casual, strolling, chamber, and orchestral music with many ensembles, and he also played on many films and television shows. He especially enjoyed his work with Murray Korda's "Monseigneur Strings"—a group of musicians who were renowned in the Los Angeles area for playing for high-end society functions for presidents and Hollywood royalty. He conducted other groups, such as the Los Angeles Mandolin Orchestra and the Casa Italiana Opera Company. Joel also made wonderful arrangements for string ensembles—duets, trios and quartets.</p>
+                <p>The Palisades Symphony always stood at the center of Joel’s activities. It is a true community orchestra, as all musicians volunteer their services. Joel was gratified to know that his beloved orchestra would be able to continue under the very capable leadership of Denisa Hanna and Dr. Maxim Kuzin.</p>
+            </div>
+        </section>
+
+        <!-- Next Concert -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Next Concert</button>
+            <div class="accordion-content">
+                <p>You’re cordially invited to join us for our next concert: “Three Tenor Titans: A Night of Opera Favorites” where three outstanding voices unite in the grand tradition of Pavarotti, Domingo, and Carreras—drawing inspiration from their legendary debut at Rome’s Baths of Caracalla in 1990 which reached a live audience of 6,000 and was broadcast to an estimated 800 million around the globe! This evening promises soaring arias, Neapolitan favorites, and powerful ensemble highlights like “Nessun dorma.”</p>
+                <p>The venue and date are TBA due to the Palisades fire aftermath affecting our organization.</p>
+            </div>
+        </section>
+
+        <!-- Contact Information -->
+        <section class="bg-gray-800 p-4 rounded shadow mb-6">
+            <button class="accordion-button">Contact Information</button>
+            <div class="accordion-content">
+                <p><strong>Palisades Symphony</strong><br>
+                P.O. Box 214, Pacific Palisades, CA 90272<br>
+                Email: <a href="mailto:ContactPalisadesSymphony@gmail.com">ContactPalisadesSymphony@gmail.com</a><br>
+                Website: <a href="http://www.palisadessymphony.org">www.palisadessymphony.org</a></p>
+                <p>Donate via Zelle or Venmo.</p>
+            </div>
+        </section>
+
+        <!-- JavaScript for Accordion -->
+        <script>
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    content.classList.toggle('active');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
